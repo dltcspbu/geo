@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Hosting;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace UnitTests
@@ -14,8 +15,8 @@ namespace UnitTests
     {
         private RoutesService _routesService;
 
-        [SetUp]
-        public void SetUp()
+        [OneTimeSetUp]
+        public void Init()
         {
             _routesService = new RoutesService();
         }
@@ -58,7 +59,7 @@ namespace UnitTests
 
             // Act
             var expected = _pathStub;
-            var actual = _routesService.GetPath(startPoint, endPoint, profiles);
+            var actual = _routesService.GetPath(startPoint, endPoint, profiles).ToList();
 
             // Assert
             Assert.AreEqual(expected, actual);
@@ -74,7 +75,7 @@ namespace UnitTests
 
             // Act
             var expected = _pathStub;
-            var actual = _routesService.GetPath(startPoint, endPoint, profiles);
+            var actual = _routesService.GetPath(startPoint, endPoint, profiles).ToList();
 
             // Assert
             Assert.AreEqual(expected, actual);
