@@ -35,19 +35,19 @@ namespace DltcGeoServer.Controllers
             if (points.Count() < 2)
                 return BadRequest("Number of points should be > 1");
 
-            var profiles = new List<Profile>() { Itinero.Osm.Vehicles.Vehicle.Car.Shortest(), Itinero.Osm.Vehicles.Vehicle.Pedestrian.Shortest() };
-            //foreach (var vehicle in vehicles)
-            //{
-            //    switch (vehicle)
-            //    {
-            //        case "car":
-            //            profiles.Add(Itinero.Osm.Vehicles.Vehicle.Car.Shortest());
-            //            break;
-            //        case "pedestrian":
-            //            profiles.Add(Itinero.Osm.Vehicles.Vehicle.Pedestrian.Shortest());
-            //            break;
-            //    }
-            //}
+            var profiles = new List<Profile>();
+            foreach (var vehicle in vehicles)
+            {
+                switch (vehicle)
+                {
+                    case "car":
+                        profiles.Add(Itinero.Osm.Vehicles.Vehicle.Car.Shortest());
+                        break;
+                    case "pedestrian":
+                        profiles.Add(Itinero.Osm.Vehicles.Vehicle.Pedestrian.Shortest());
+                        break;
+                }
+            }
             if (profiles.Count == 0)
                 profiles.Add(Itinero.Osm.Vehicles.Vehicle.Car.Shortest());
 
@@ -61,17 +61,9 @@ namespace DltcGeoServer.Controllers
                     var routePoints = _routesService.GetPath(start, point, profiles);
                     if (routePoints != null)
                     {
-                        route.AddRange(routePoints);
-                        
+                        route.AddRange(routePoints);                        
                     }
-
-                    //else
-                    //{
-                    //   route.Add(start);
-                    //  route.Add(point);
-                    //}
                     start = point;
-
                 }
                 catch (RouteNotFoundException e)
                 {

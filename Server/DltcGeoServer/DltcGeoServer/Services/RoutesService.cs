@@ -45,8 +45,8 @@ namespace DltcGeoServer.Services
 
             foreach (var profile in profiles)
             {
-                var startEdge = _router.TryResolve(profile, (float)start.Latitude, (float)start.Longitude, searchDistanceInMeter: 10);//, settings: new Itinero.Algorithms.Search.ResolveSettings() { MinIslandSize = 2 });
-                var endEdge = _router.TryResolve(profile, (float)end.Latitude, (float)end.Longitude, searchDistanceInMeter: 10);//, settings: new Itinero.Algorithms.Search.ResolveSettings() { MinIslandSize = 2});
+                var startEdge = _router.TryResolve(profile, (float)start.Latitude, (float)start.Longitude, searchDistanceInMeter: 10);
+                var endEdge = _router.TryResolve(profile, (float)end.Latitude, (float)end.Longitude, searchDistanceInMeter: 10);
                 if (startEdge.IsError)
                     throw new RouteNotFoundException("start");
                 if(endEdge.IsError)
@@ -54,8 +54,6 @@ namespace DltcGeoServer.Services
 
                 try
                 {
-                    //var startEdge = _router.TryResolve(profile, (float)start.Latitude, (float)start.Longitude, searchDistanceInMeter: 20);//, settings: new Itinero.Algorithms.Search.ResolveSettings() { MinIslandSize = 2 });
-                    //var endEdge = _router.TryResolve(profile, (float)end.Latitude, (float)end.Longitude, searchDistanceInMeter: 20);//, settings: new Itinero.Algorithms.Search.ResolveSettings() { MinIslandSize = 2});
                     var route = _router.Calculate(profile, startEdge.Value, endEdge.Value);
                     if (resultRoute == null || route.TotalDistance < resultRoute.TotalDistance)
                         resultRoute = route;
