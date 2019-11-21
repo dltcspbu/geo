@@ -1,0 +1,6 @@
+Django~=2.0.6
+gunicorn==19.9.0
+folium
+pykalman
+numpy
+scipy
