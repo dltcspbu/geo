@@ -41,6 +41,15 @@ namespace DltcGeoServer.Services
 
         public IEnumerable<Point> GetPath(Point start, Point end, List<Profile> profiles)
         {
+            if (start == null)
+                throw new NullReferenceException("Start point is null");
+
+            if (end == null)
+                throw new NullReferenceException("End point is null");
+
+            if (profiles == null)
+                profiles = new List<Profile>() { Itinero.Osm.Vehicles.Vehicle.Car.Shortest() };
+
             Route resultRoute = null;
 
             foreach (var profile in profiles)
@@ -82,6 +91,12 @@ namespace DltcGeoServer.Services
 
         public IEnumerable<Point> GetPathForGroup(List<Point> points, List<Profile> profiles)
         {
+            if (points == null)
+                throw new NullReferenceException("Points are null");
+
+            if (profiles == null)
+                profiles = new List<Profile>() { Itinero.Osm.Vehicles.Vehicle.Car.Shortest() };
+
             Route resultRoute = null;
 
             foreach (var profile in profiles)
