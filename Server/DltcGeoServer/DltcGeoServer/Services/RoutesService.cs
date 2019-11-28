@@ -21,6 +21,7 @@ namespace DltcGeoServer.Services
         {
             _routerDb = new RouterDb();
 
+
             var stream = new FileStream("/app/LO.pbf", FileMode.Open);
             {
                 try
@@ -41,6 +42,15 @@ namespace DltcGeoServer.Services
 
         public IEnumerable<Point> GetPath(Point start, Point end, List<Profile> profiles)
         {
+            if (start == null)
+                throw new ArgumentNullException("Start point is null");
+
+            if (end == null)
+                throw new ArgumentNullException("End point is null");
+
+            if (profiles == null || !profiles.Any())
+                profiles = new List<Profile>() { Itinero.Osm.Vehicles.Vehicle.Car.Shortest() };
+
             Route resultRoute = null;
 
             foreach (var profile in profiles)
@@ -82,6 +92,12 @@ namespace DltcGeoServer.Services
 
         public IEnumerable<Point> GetPathForGroup(List<Point> points, List<Profile> profiles)
         {
+            if (points == null)
+                throw new ArgumentNullException("Points are null");
+
+            if (profiles == null || !profiles.Any())
+                profiles = new List<Profile>() { Itinero.Osm.Vehicles.Vehicle.Car.Shortest() };
+
             Route resultRoute = null;
 
             foreach (var profile in profiles)
