@@ -17,5 +17,6 @@ RUN dotnet publish "DltcGeoServer.csproj" -c Release -o /app
 FROM base AS final
 WORKDIR /app
 COPY ["DltcGeoServer/LO.pbf", "/app/"]
+COPY ["DltcGeoServer/train.lua", "/app/"]
 COPY --from=publish /app .
 ENTRYPOINT ["dotnet", "DltcGeoServer.dll"]
