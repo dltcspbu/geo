@@ -21,15 +21,15 @@ namespace DltcGeoServer.Services
         {
             _routerDb = new RouterDb();
 
-
-            var stream = new FileStream("/app/LO.pbf", FileMode.Open);
+            using(var stream = new FileStream("/app/LO.pbf", FileMode.Open))
             {
                 try
                 {
                     _routerDb.LoadOsmData(stream, new[]
                     {
                         Itinero.Osm.Vehicles.Vehicle.Car,
-                        Itinero.Osm.Vehicles.Vehicle.Pedestrian
+                        Itinero.Osm.Vehicles.Vehicle.Pedestrian,
+                        DynamicVehicle.LoadFromStream(File.OpenRead("/app/train.lua"))
                     });
                     _router = new Router(_routerDb);
                 }
@@ -121,6 +121,40 @@ namespace DltcGeoServer.Services
                     Latitude = p.Latitude,
                     Longitude = p.Longitude
                 });
+        }
+
+        public IEnumerable<Point> GetPathForTrain(List<Point> points)
+        {
+            if (points == null)
+                throw new ArgumentNullException("Points are null");
+
+            var trainProfile = _routerDb.GetSupportedVehicle("train");
+
+            var resolvedPoints = new List<RouterPoint>();
+            foreach(var point in points)
+            {
+                var p = _router.Resolve(trainProfile.Shortest(), (float)point.Latitude, (float)point.Longitude);
+                resolvedPoints.Add(p);
+            }
+
+            try
+            {
+                var route = _router.Calculate(trainProfile.Shortest(), resolvedPoints.ToArray());
+
+                return route
+                    ?.Shape
+                    ?.Select(p => new Point
+                    {
+                        Latitude = p.Latitude,
+                        Longitude = p.Longitude
+                    });
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine($"FAILED TO BUILD ROUTE: {e.Message}");
+            }
+
+            return null;
         }
 
         private static double GetMinLength(Point start, Point end)

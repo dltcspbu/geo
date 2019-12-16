@@ -45,7 +45,7 @@ namespace DltcGeoServer.Controllers
                         break;
                     case "pedestrian":
                         profiles.Add(Itinero.Osm.Vehicles.Vehicle.Pedestrian.Shortest());
-                        break;
+                        break;                        
                 }
             }
             if (profiles.Count == 0)
@@ -112,6 +112,29 @@ namespace DltcGeoServer.Controllers
             var route = _routesService.GetPathForGroup(points, profiles);
 
             return Ok(route);
+        }
+
+        // POST api/routes/train
+        [HttpPost("train")]
+        public ActionResult FindRouteForTrain([FromBody] List<Point> points)
+        {
+            if (points == null)
+                return BadRequest("Failed to deserialize model");
+
+            if (points.Count() < 2)
+                return BadRequest("Number of points should be > 1");
+
+            var route = _routesService.GetPathForTrain(points);
+
+            return Ok(route);
+
+            //return Ok(route.Select(p => new CustomFeature
+            //{
+            //    geometry = new Geometry
+            //    {
+            //        coordinates = new List<double>() { p.Longitude, p.Latitude}
+            //    }
+            //}));
         }
     }
 }
